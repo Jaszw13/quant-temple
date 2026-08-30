@@ -603,6 +603,252 @@
     transform: translateX(2px);
   }
 
+  /* ============ RIGHT PANEL (啟示錄) ============ */
+  .right-panel {
+    position: fixed;
+    top: 88px; right: 28px; bottom: 72px;
+    width: 300px; z-index: 96;
+    background: var(--panel-bg);
+    border: 1px solid var(--panel-border);
+    border-radius: 20px;
+    transform: translateX(0);
+    transition: transform 0.5s var(--ease), opacity 0.5s var(--ease);
+    overflow-y: auto;
+    padding: 24px 20px;
+    display: flex; flex-direction: column; gap: 16px;
+    box-shadow: var(--panel-shadow);
+  }
+  .right-panel.collapsed {
+    transform: translateX(120%);
+    opacity: 0;
+    pointer-events: none;
+  }
+  .right-panel-toggle {
+    position: fixed;
+    top: 50%;
+    right: calc(300px + 28px);
+    transform: translateY(-50%);
+    z-index: 91;
+    width: 28px; height: 56px;
+    background: var(--panel-bg);
+    border: 1px solid var(--panel-border);
+    border-right: none;
+    border-radius: 12px 0 0 12px;
+    display: flex; align-items: center; justify-content: center;
+    cursor: pointer;
+    color: var(--text-muted);
+    transition: right 0.5s var(--ease), color 0.3s var(--ease), background 0.3s var(--ease);
+    box-shadow: var(--shadow-md);
+  }
+  .right-panel.collapsed + .right-panel-toggle { right: 0; }
+  .right-panel-toggle:hover {
+    color: var(--accent);
+    background: var(--surface-hover);
+  }
+  .right-panel-toggle .icon { width: 14px; height: 14px; }
+
+  .revelation-head {
+    align-items: center;
+  }
+  .revelation-view-switch {
+    display: flex; gap: 4px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 3px;
+  }
+  .revelation-view-btn {
+    border: none; background: transparent;
+    font-family: var(--font-cn);
+    font-size: 11px; color: var(--text-muted);
+    padding: 4px 10px; border-radius: 7px;
+    cursor: pointer; letter-spacing: 0.05em;
+    transition: all 0.3s var(--ease);
+  }
+  .revelation-view-btn.active {
+    background: var(--accent);
+    color: white;
+  }
+  .revelation-sub {
+    padding-bottom: 4px;
+    border-bottom: none;
+  }
+
+  .revelation-list,
+  .revelation-all-list {
+    display: flex; flex-direction: column; gap: 10px;
+    flex: 1;
+  }
+  .revelation-all-list {
+    overflow-y: auto;
+  }
+  .revelation-empty {
+    font-family: var(--font-cn);
+    font-size: 12.5px;
+    color: var(--text-muted);
+    line-height: 1.8;
+    text-align: center;
+    padding: 24px 12px;
+    border: 1px dashed var(--border);
+    border-radius: 12px;
+    letter-spacing: 0.04em;
+  }
+  .revelation-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 12px 14px;
+    transition: all 0.3s var(--ease);
+  }
+  .revelation-card:hover {
+    border-color: var(--border-hover);
+    background: var(--surface-hover);
+  }
+  .revelation-card-top {
+    display: flex; align-items: center; gap: 8px;
+    margin-bottom: 6px;
+  }
+  .revelation-tag {
+    font-family: var(--font-mono);
+    font-size: 10px;
+    padding: 2px 8px;
+    border-radius: 10px;
+    letter-spacing: 0.05em;
+    background: var(--accent-soft);
+    color: var(--accent);
+  }
+  .revelation-tag.tag-problem { background: rgba(232, 107, 107, 0.12); color: #E86B6B; }
+  .revelation-tag.tag-insight { background: var(--accent-soft); color: var(--accent); }
+  .revelation-tag.tag-idea { background: var(--accent-2-soft); color: var(--accent-2); }
+  .revelation-tag.tag-note { background: var(--surface-hover); color: var(--text-secondary); }
+  .revelation-time {
+    font-family: var(--font-mono);
+    font-size: 10px;
+    color: var(--text-muted);
+    margin-left: auto;
+  }
+  .revelation-del {
+    border: none; background: transparent;
+    width: 22px; height: 22px;
+    display: flex; align-items: center; justify-content: center;
+    color: var(--text-muted);
+    cursor: pointer;
+    border-radius: 50%;
+    transition: all 0.3s var(--ease);
+    flex-shrink: 0;
+  }
+  .revelation-del:hover {
+    color: #E86B6B;
+    background: rgba(232, 107, 107, 0.1);
+  }
+  .revelation-del .icon { width: 12px; height: 12px; }
+  .revelation-text {
+    font-family: var(--font-cn);
+    font-size: 13px;
+    line-height: 1.7;
+    color: var(--text-primary);
+    white-space: pre-wrap;
+    word-break: break-word;
+    letter-spacing: 0.02em;
+  }
+
+  .revelation-input-box {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 12px;
+    display: flex; flex-direction: column; gap: 10px;
+  }
+  .revelation-tags {
+    display: flex; gap: 6px; flex-wrap: wrap;
+  }
+  .revelation-tag-btn {
+    border: 1px solid var(--border);
+    background: transparent;
+    font-family: var(--font-cn);
+    font-size: 11px;
+    color: var(--text-secondary);
+    padding: 4px 10px;
+    border-radius: 10px;
+    cursor: pointer;
+    transition: all 0.3s var(--ease);
+  }
+  .revelation-tag-btn:hover { border-color: var(--accent); color: var(--accent); }
+  .revelation-tag-btn.active {
+    background: var(--accent);
+    border-color: var(--accent);
+    color: white;
+  }
+  .revelation-textarea {
+    width: 100%;
+    background: var(--panel-bg);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    color: var(--text-primary);
+    font-family: var(--font-cn);
+    font-size: 13px;
+    line-height: 1.7;
+    padding: 10px 12px;
+    resize: vertical;
+    min-height: 72px;
+    outline: none;
+    transition: border-color 0.3s var(--ease);
+    box-sizing: border-box;
+  }
+  .revelation-textarea:focus {
+    border-color: var(--accent);
+    box-shadow: 0 0 0 3px var(--accent-soft);
+  }
+  .revelation-input-actions {
+    display: flex; gap: 8px; justify-content: flex-end;
+  }
+  .revelation-input-actions .btn {
+    flex: 0 0 auto;
+    padding: 8px 16px;
+    font-size: 12px;
+  }
+  .revelation-add-btn {
+    display: flex; align-items: center; justify-content: center; gap: 8px;
+    padding: 12px;
+    border: 1px dashed var(--accent);
+    background: var(--accent-soft);
+    color: var(--accent);
+    border-radius: 12px;
+    font-family: var(--font-cn);
+    font-size: 12.5px;
+    cursor: pointer;
+    transition: all 0.3s var(--ease);
+    letter-spacing: 0.05em;
+  }
+  .revelation-add-btn:hover {
+    background: var(--accent);
+    color: white;
+  }
+  .revelation-add-btn .icon { width: 14px; height: 14px; }
+
+  .revelation-day-block {
+    display: flex; flex-direction: column; gap: 8px;
+    padding-bottom: 10px;
+    border-bottom: 1px solid var(--border);
+  }
+  .revelation-day-block:last-child { border-bottom: none; }
+  .revelation-day-header {
+    display: flex; align-items: baseline; gap: 8px;
+    font-family: var(--font-mono);
+    font-size: 11px;
+    color: var(--accent);
+    letter-spacing: 0.05em;
+    padding-top: 2px;
+  }
+  .revelation-day-title {
+    font-family: var(--font-cn);
+    font-size: 12px;
+    color: var(--text-secondary);
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
   /* ============ TEMPLE SCENE ============ */
   .temple-scene {
     position: absolute; top: 0; left: 0; width: 100%; height: 100%;
@@ -1339,6 +1585,8 @@
   @media (max-width: 1024px) {
     .left-panel { width: 260px; left: 20px; }
     .panel-toggle { left: calc(260px + 32px); }
+    .right-panel { width: 260px; right: 20px; }
+    .right-panel-toggle { right: calc(260px + 24px); }
     .nav-pill { display: none; }
     .bottom-item:nth-child(4), .bottom-item:nth-child(5) { display: none; }
   }
@@ -1569,6 +1817,63 @@
     .milestone-subtitle {
       font-size: 14px;
       letter-spacing: 0.3em;
+    }
+
+    /* Revelation panel: right-side drawer on mobile */
+    .right-panel {
+      position: fixed;
+      top: 0; right: 0; bottom: 0; left: auto;
+      width: 88%;
+      max-width: 380px;
+      height: 100%;
+      border-radius: 20px 0 0 20px;
+      border-right: none;
+      transform: translateX(100%);
+      transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+      z-index: 210;
+      box-shadow: -8px 0 32px rgba(0,0,0,0.3);
+    }
+    .right-panel:not(.collapsed) {
+      transform: translateX(0);
+      opacity: 1;
+    }
+    .right-panel-toggle {
+      position: fixed !important;
+      top: auto !important;
+      right: 14px !important;
+      bottom: 76px;
+      transform: none;
+      width: 44px; height: 44px;
+      border-radius: 50%;
+      border: 1px solid var(--panel-border);
+      border-right: 1px solid var(--panel-border);
+      box-shadow: var(--panel-shadow);
+      z-index: 95;
+    }
+    .right-panel:not(.collapsed) + .right-panel-toggle {
+      display: none;
+    }
+    .right-panel .panel-mobile-close {
+      display: flex;
+      position: absolute;
+      top: 12px; right: 12px;
+      width: 36px; height: 36px;
+      border-radius: 50%;
+      border: none;
+      background: var(--surface);
+      color: var(--text-muted);
+      cursor: pointer;
+      align-items: center; justify-content: center;
+      z-index: 5;
+    }
+    .revelation-textarea {
+      min-height: 96px;
+    }
+    .revelation-input-actions .btn {
+      min-height: 44px;
+    }
+    .revelation-add-btn {
+      min-height: 44px;
     }
   }
 

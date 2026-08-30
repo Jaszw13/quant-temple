@@ -26,6 +26,8 @@ function loadState() {
     theme: 'dark',
     soundEnabled: true,
     panelCollapsed: false,
+    revelationCollapsed: true,
+    notes: {},
   };
 }
 
@@ -669,6 +671,164 @@ function LeftPanel({
 
       <div className="panel-toggle" onClick={onToggle}>
         {collapsed ? <I.ChevronRight size="sm" /> : <I.ChevronLeft size="sm" />}
+      </div>
+    </>
+  );
+}
+
+// =============================================
+// Revelation Panel (啟示錄 · 備忘錄)
+// =============================================
+const NOTE_TAGS = {
+  problem: { label: '問題' },
+  insight: { label: '心得' },
+  idea: { label: '靈感' },
+  note: { label: '備註' },
+};
+
+function RevelationPanel({
+  collapsed, onToggle, currentDay, notes,
+  onAddNote, onDeleteNote,
+}) {
+  const { STEPS } = window.QUANTUM_TEMPLE_DATA;
+  const [view, setView] = useState('today'); // 'today' | 'all'
+  const [text, setText] = useState('');
+  const [tag, setTag] = useState('problem');
+  const [showInput, setShowInput] = useState(false);
+
+  const todayNotes = notes[String(currentDay)] || [];
+  const allDays = Object.keys(notes).map(Number).sort((a, b) => a - b);
+
+  const stepTitle = (day) => {
+    const s = STEPS.find(x => x.day === day);
+    return s ? s.title : '';
+  };
+
+  const tagLabel = (t) => (NOTE_TAGS[t] ? NOTE_TAGS[t].label : '備註');
+
+  const handleAdd = () => {
+    const t = text.trim();
+    if (!t) return;
+    onAddNote(currentDay, t, tag);
+    setText('');
+  };
+
+  return (
+    <>
+      <div className={`right-panel ${collapsed ? 'collapsed' : ''}`}>
+        <button className="panel-mobile-close" onClick={onToggle}>
+          <I.X size="sm" />
+        </button>
+
+        <div className="panel-section-header revelation-head">
+          <div className="panel-title">
+            <I.Revelation size="sm" />
+            <span>啟示錄</span>
+          </div>
+          <div className="revelation-view-switch">
+            <button
+              className={`revelation-view-btn ${view === 'today' ? 'active' : ''}`}
+              onClick={() => setView('today')}
+            >今日</button>
+            <button
+              className={`revelation-view-btn ${view === 'all' ? 'active' : ''}`}
+              onClick={() => setView('all')}
+            >全部</button>
+          </div>
+        </div>
+        <div className="hall-label revelation-sub">
+          Day {currentDay} · 記下修行路上的困頓與頓悟
+        </div>
+
+        {view === 'today' ? (
+          <>
+            <div className="revelation-list">
+              {todayNotes.length === 0 && (
+                <div className="revelation-empty">今日尚無啟示。<br/>遇到問題、心有所得時，記一筆。</div>
+              )}
+              {todayNotes.map(n => (
+                <div className="revelation-card" key={n.id}>
+                  <div className="revelation-card-top">
+                    <span className={`revelation-tag tag-${n.tag}`}>{tagLabel(n.tag)}</span>
+                    <span className="revelation-time">{n.time}</span>
+                    <button
+                      className="revelation-del"
+                      onClick={() => onDeleteNote(currentDay, n.id)}
+                      title="刪除"
+                    >
+                      <I.X size="sm" />
+                    </button>
+                  </div>
+                  <div className="revelation-text">{n.text}</div>
+                </div>
+              ))}
+            </div>
+
+            {showInput ? (
+              <div className="revelation-input-box">
+                <div className="revelation-tags">
+                  {Object.keys(NOTE_TAGS).map(k => (
+                    <button
+                      key={k}
+                      className={`revelation-tag-btn ${tag === k ? 'active' : ''}`}
+                      onClick={() => setTag(k)}
+                    >{NOTE_TAGS[k].label}</button>
+                  ))}
+                </div>
+                <textarea
+                  className="revelation-textarea"
+                  placeholder="記錄此刻的困惑、頓悟或靈感…"
+                  value={text}
+                  onChange={e => setText(e.target.value)}
+                  rows={4}
+                />
+                <div className="revelation-input-actions">
+                  <button className="btn btn-ghost" onClick={() => { setShowInput(false); setText(''); }}>取消</button>
+                  <button className="btn btn-primary" onClick={handleAdd} disabled={!text.trim()}>記下</button>
+                </div>
+              </div>
+            ) : (
+              <button className="revelation-add-btn" onClick={() => setShowInput(true)}>
+                <I.Sparkles size="sm" />
+                <span>記下一則啟示</span>
+              </button>
+            )}
+          </>
+        ) : (
+          <div className="revelation-all-list">
+            {allDays.length === 0 && (
+              <div className="revelation-empty">尚無任何啟示。<br/>在「今日」分頁記下第一筆。</div>
+            )}
+            {allDays.map(day => (
+              <div className="revelation-day-block" key={day}>
+                <div className="revelation-day-header">
+                  <span>Day {day}</span>
+                  <span className="revelation-day-title">{stepTitle(day)}</span>
+                </div>
+                {(notes[String(day)] || []).map(n => (
+                  <div className="revelation-card" key={n.id}>
+                    <div className="revelation-card-top">
+                      <span className={`revelation-tag tag-${n.tag}`}>{tagLabel(n.tag)}</span>
+                      <span className="revelation-time">{n.time}</span>
+                      <button
+                        className="revelation-del"
+                        onClick={() => onDeleteNote(day, n.id)}
+                        title="刪除"
+                      >
+                        <I.X size="sm" />
+                      </button>
+                    </div>
+                    <div className="revelation-text">{n.text}</div>
+                  </div>
+                ))}
+              </div>
+            ))}
+          </div>
+        )}
+      </div>
+
+      <div className="right-panel-toggle" onClick={onToggle}>
+        {collapsed ? <I.ChevronLeft size="sm" /> : <I.ChevronRight size="sm" />}
       </div>
     </>
   );
@@ -1455,6 +1615,85 @@ function App() {
     input.click();
   }, []);
 
+  // ==== 啟示錄（備忘錄）操作 ====
+  const addNote = useCallback((day, text, tag) => {
+    const key = String(day);
+    const now = new Date();
+    const timeStr =
+      `${String(now.getMonth()+1).padStart(2,'0')}-${String(now.getDate()).padStart(2,'0')} ` +
+      `${String(now.getHours()).padStart(2,'0')}:${String(now.getMinutes()).padStart(2,'0')}`;
+    const note = {
+      id: Date.now().toString(36) + Math.random().toString(36).slice(2, 6),
+      text: text.trim(),
+      tag: tag || 'note',
+      time: timeStr,
+    };
+    setState(prev => {
+      const list = prev.notes[key] || [];
+      return { ...prev, notes: { ...prev.notes, [key]: [...list, note] } };
+    });
+  }, []);
+
+  const deleteNote = useCallback((day, id) => {
+    const key = String(day);
+    setState(prev => {
+      const list = (prev.notes[key] || []).filter(n => n.id !== id);
+      const notes = { ...prev.notes };
+      if (list.length) notes[key] = list;
+      else delete notes[key];
+      return { ...prev, notes };
+    });
+  }, []);
+
+  const toggleRevelation = useCallback(() => {
+    setState(prev => ({ ...prev, revelationCollapsed: !prev.revelationCollapsed }));
+  }, []);
+
+  // ==== 導出報告（Markdown，人性化） ====
+  const exportReport = useCallback(() => {
+    const now = new Date();
+    const dateStr = now.toISOString().slice(0, 10);
+    const lines = [];
+    lines.push('# 量化聖殿 · 啟示錄報告');
+    lines.push(`> 生成時間：${dateStr} ｜ 總進度：${state.completedDays.length}/${TOTAL_STEPS} ｜ 聖火：${state.fireStreak} 天`);
+    lines.push('');
+
+    // 收集：已完成 或 有筆記 的天
+    const daySet = new Set();
+    Object.keys(state.notes).forEach(d => daySet.add(parseInt(d, 10)));
+    state.completedDays.forEach(d => daySet.add(d));
+    const days = Array.from(daySet).sort((a, b) => a - b);
+
+    const tagLabel = { problem: '問題', insight: '心得', idea: '靈感', note: '備註' };
+
+    for (const day of days) {
+      const step = STEPS.find(s => s.day === day);
+      if (!step) continue;
+      const hall = getHallByDay(day);
+      const done = state.completedDays.includes(day);
+      const notes = state.notes[String(day)] || [];
+      lines.push(`## Day ${day} · ${step.title}`);
+      lines.push(`- 殿區：${hall.cnName}`);
+      lines.push(`- 狀態：${done ? '已完成' : '未完成'}`);
+      if (notes.length) {
+        lines.push('- 啟示錄：');
+        notes.forEach(n => {
+          lines.push(`  - [${tagLabel[n.tag] || '備註'}] ${n.text}（${n.time}）`);
+        });
+      }
+      lines.push('');
+    }
+
+    const md = lines.join('\n');
+    const blob = new Blob([md], { type: 'text/markdown;charset=utf-8' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `quant-temple-report-${dateStr}.md`;
+    a.click();
+    URL.revokeObjectURL(url);
+  }, [state, STEPS, getHallByDay, TOTAL_STEPS]);
+
   const selectedHall = selectedStep ? getHallByDay(selectedStep.day) : currentHall;
 
   return (
@@ -1508,6 +1747,15 @@ function App() {
           onUnlockClick={openUnlock}
         />
 
+        <RevelationPanel
+          collapsed={state.revelationCollapsed}
+          onToggle={toggleRevelation}
+          currentDay={state.currentDay}
+          notes={state.notes}
+          onAddNote={addNote}
+          onDeleteNote={deleteNote}
+        />
+
         <ScrollIndicator
           steps={STEPS}
           currentDay={state.currentDay}
@@ -1551,10 +1799,13 @@ function App() {
           />
         )}
 
-        <div className="data-controls">
-          <button className="text-btn" onClick={exportProgress}>導出進度</button>
-          <button className="text-btn" onClick={importProgress}>導入進度</button>
-        </div>
+        {state.revelationCollapsed && (
+          <div className="data-controls">
+            <button className="text-btn" onClick={exportReport}>導出報告</button>
+            <button className="text-btn" onClick={exportProgress}>導出進度</button>
+            <button className="text-btn" onClick={importProgress}>導入進度</button>
+          </div>
+        )}
       </div>
     </div>
   );

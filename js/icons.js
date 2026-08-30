@@ -144,6 +144,11 @@
       { type: 'rect', x: '9', y: '9', width: '13', height: '13', rx: '2' },
       { type: 'path', d: 'M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1' },
     ],
+    Revelation: [
+      { type: 'path', d: 'M4 6h4a3 3 0 0 1 3 3v11a2.5 2.5 0 0 0-2.5-2.5H4V6z' },
+      { type: 'path', d: 'M20 6h-4a3 3 0 0 0-3 3v11a2.5 2.5 0 0 1 2.5-2.5H20V6z' },
+      { type: 'path', d: 'M12 2l.9 2.1L15 5l-2.1.9L12 8l-.9-2.1L9 5l2.1-.9L12 2z' },
+    ],
   };
 
   // Build icon components
